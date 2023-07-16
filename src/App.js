@@ -1,8 +1,6 @@
 import styles from './App.module.css';
 import React from 'react';
 import CalculatorKey from './CalculatorKey';
-import { useState } from 'react';
-
 export class App extends React.Component {
 	constructor() {
 		super();
