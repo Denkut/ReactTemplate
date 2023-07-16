@@ -1,43 +1,79 @@
-import logo from './logo.svg';
-import './App.css';
+import styles from './App.module.css';
 import React from 'react';
+import CalculatorKey from './CalculatorKey';
+import { useState } from 'react';
 
-export const App = () => {
-	const dateNow = new Date();
-	// императивный
-	return React.createElement(
-		'div',
-		{
-			className: 'App',
-		},
-		React.createElement(
-			'header',
-			{
-				className: 'App-header',
-			},
-			React.createElement('img', {
-				src: logo,
-				className: 'App-logo',
-				alt: 'logo',
-			}),
-			React.createElement(
-				'p',
-				null,
-				'Edit ',
-				React.createElement('code', null, 'src/App.js'),
-				' and save to reload.',
-			),
-			React.createElement(
-				'a',
-				{
-					className: 'App-link',
-					href: 'https://reactjs.org',
-					target: '_blank',
-					rel: 'noopener noreferrer',
-				},
-				'Learn React',
-			),
-			/*#__PURE__*/ React.createElement('p', null, dateNow.getFullYear()),
-		),
-	);
-};
+export class App extends React.Component {
+	constructor() {
+		super();
+		this.state = {
+			out: '0',
+		};
+		this.refOutput = React.createRef();
+	}
+	tapeNumber(value) {
+		let currentValue = value;
+		let output = this.refOutput.current;
+
+		this.setState({
+			out: currentValue,
+		});
+
+		if (output.value === '0') {
+			output.value = '';
+		}
+		output.value += currentValue;
+	}
+
+	tapeOperation(value) {
+		let output = this.refOutput.current;
+
+		if (value === 'C') {
+			output.value = '0';
+		} else if (value === '=')
+			try {
+				output.value = eval(output.value);
+			} catch {
+				output.value = 'Недопустимое значение';
+				setTimeout(() => {
+					output.value = '0';
+				}, 2000);
+			}
+	}
+
+	render() {
+		return (
+			<div className={styles.container}>
+				<div className={styles.output}>
+					<input
+						ref={this.refOutput}
+						type="text"
+						defaultValue={this.state.out}
+					/>
+				</div>
+				<div className={styles.buttons}>
+					{CalculatorKey.buttons.map((item, id) => (
+						<button
+							key={id}
+							onClick={() => {
+								this.tapeNumber(item.val);
+							}}
+						>
+							{item.val}
+						</button>
+					))}
+					{CalculatorKey.operations.map((item, id) => (
+						<button
+							key={id}
+							onClick={() => {
+								this.tapeOperation(item.val);
+							}}
+						>
+							{item.val}
+						</button>
+					))}
+				</div>
+			</div>
+		);
+	}
+}
