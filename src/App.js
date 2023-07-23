@@ -2,88 +2,6 @@
 import React, { useState } from 'react';
 import styles from './App.module.css';
 import { Input } from './input';
-// import CalculatorKey from './CalculatorKey';
-// export class App extends React.Component {
-// 	const [showGreenResult, setShowGreenResult] = useState(false);
-
-// 	const onClick = () => {
-
-// 		setShowText(!showText);
-// 		};
-// 	constructor() {
-// 		super();
-// 		this.state = {
-// 			out: '0',
-// 		};
-// 		this.refOutput = React.createRef();
-// 	}
-// 	tapeNumber(value) {
-// 		let currentValue = value;
-// 		let output = this.refOutput.current;
-
-// 		this.setState({
-// 			out: currentValue,
-// 		});
-
-// 		if (output.value === '0') {
-// 			output.value = '';
-// 		}
-// 		output.value += currentValue;
-// 	}
-
-// 	tapeOperation(value) {
-// 		let output = this.refOutput.current;
-
-// 		if (value === 'C') {
-// 			output.value = '0';
-// 		} else if (value === '=')
-// 			try {
-// 				output.value = eval(output.value);
-// 			} catch {
-// 				output.value = 'Недопустимое значение';
-// 				setTimeout(() => {
-// 					output.value = '0';
-// 				}, 2000);
-// 			}
-// 	}
-
-// 	render() {
-// 		return (
-// 			<div className={styles.container}>
-// 				<div className={styles.output}>
-// 					<input
-// 						ref={this.refOutput}
-// 						type="text"
-// 						defaultValue={this.state.out}
-// 					/>
-// 				</div>
-// 				<div className={styles.buttons}>
-// 					{CalculatorKey.buttons.map((item, id) => (
-// 						<button
-// 							key={id}
-// 							onClick={() => {
-// 								this.tapeNumber(item.val);
-// 							}}
-// 						>
-// 							{item.val}
-// 						</button>
-// 					))}
-// 					{CalculatorKey.operations.map((item, id) => (
-// 						<button
-// 							key={id}
-// 							onClick={() => {
-// 								this.tapeOperation(item.val);
-// 							}}
-// 						>
-// 							{item.val}
-// 						</button>
-// 					))}
-// 				</div>
-// 			</div>
-// 		);
-// 	}
-// }
-//
 
 export const App = () => {
 	const [result, setResult] = useState('');
@@ -121,17 +39,6 @@ export const App = () => {
 				<div className={showGreenResult ? styles.resultShow : styles.inputValue}>
 					{result}
 				</div>
-				{/* <form>
-					<input
-						className={
-							showGreenResult ? styles.input_result : styles.input_value
-						}
-						type="text"
-						value={result}
-						onChange={(e) => setshowGreenResult(e.target.value)}
-					/>
-				</form> */}
-
 				<div className={styles.keypad}>
 					<button
 						className={styles.highlight}
