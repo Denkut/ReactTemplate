@@ -1,5 +1,5 @@
 /* eslint-disable */
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useRef } from 'react';
 import styles from './App.module.css';
 //начальное состояние
 const initialState = {
@@ -7,9 +7,11 @@ const initialState = {
 	password: '',
 	confirmPassword: '',
 };
-
 const emailRegex =
 	/^(([^<>()[\]\.,;:\s@\"]+(\.[^<>()[\]\.,;:\s@\"]+)*)|(\".+\"))@(([^<>()[\]\.,;:\s@\"]+\.)+[^<>()[\]\.,;:\s@\"]{2,})$/i;
+const passwordRegex =
+	/^(?=.*[0-9])(?=.*[a-zA-Z])(?=.*[!@#$%^&*])[a-zA-Z0-9!@#$%^&*]{6,20}$/;
+
 //свой хук
 const useStore = () => {
 	const [state, setState] = useState(initialState);
@@ -21,7 +23,7 @@ const useStore = () => {
 		updateState: (fieldName, newValue) => {
 			//передаем сначало начальное состояние(email, password, confirmPassword), потом новое состояние по имени[fieldName]
 			setState({ ...state, [fieldName]: newValue });
-			// console.log('updateState', state);
+			console.log('updateState', state);
 		},
 	};
 };
@@ -35,14 +37,21 @@ export const App = () => {
 	const [errors, setErrors] = useState({});
 	const [validForm, setValidForm] = useState(false);
 
+	const submitButtonRef = useRef(null);
+
+	//Валидация формы
 	const validateValues = (inputValues) => {
 		let errors = {};
 		console.log('validateValues', inputValues);
 		if (inputValues.email.length > 0 && !emailRegex.test(inputValues.email)) {
 			errors.email = 'Некоректный Email';
 		}
-		if (inputValues.password.length > 0 && inputValues.password.length < 2) {
-			errors.password = 'Password is too short';
+		if (
+			inputValues.password.length > 0 &&
+			!passwordRegex.test(inputValues.password)
+		) {
+			errors.password =
+				'В пароле должно быть от 6-20 символов и включать в себя хотя бы: 1 букву, 1 специальный символ, одну цифру';
 		}
 		if (
 			inputValues.confirmPassword.length > 0 &&
@@ -52,7 +61,7 @@ export const App = () => {
 		}
 		return errors;
 	};
-
+	//Проверка на валидность формы
 	const checkValidForm = () => {
 		const form = getState();
 		for (const key in form) {
@@ -87,6 +96,13 @@ export const App = () => {
 	useEffect(() => {
 		setValidForm(checkValidForm());
 	}, [email, password, confirmPassword, errors]);
+
+	useEffect(() => {
+		if (validForm) {
+			submitButtonRef.current.focus();
+		}
+	}, [validForm]);
+
 	return (
 		<div className={styles.app}>
 			<form className={styles.formInput} onSubmit={onSubmit}>
@@ -124,7 +140,7 @@ export const App = () => {
 					onChange={onChange}
 					onBlur={onBlur}
 				/>
-				<button disabled={!validForm} type="submit">
+				<button ref={submitButtonRef} type="submit" disabled={!validForm}>
 					Зарегестрироваться
 				</button>
 			</form>
