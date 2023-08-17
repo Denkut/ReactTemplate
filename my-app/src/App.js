@@ -1,39 +1,20 @@
 /* eslint-disable */
 import { useEffect, useState, useRef } from 'react';
 import styles from './App.module.css';
-//начальное состояние
-const initialState = {
-	email: '',
-	password: '',
-	confirmPassword: '',
-};
+import { useStore } from './hooks/useStore';
+
 const emailRegex =
 	/^(([^<>()[\]\.,;:\s@\"]+(\.[^<>()[\]\.,;:\s@\"]+)*)|(\".+\"))@(([^<>()[\]\.,;:\s@\"]+\.)+[^<>()[\]\.,;:\s@\"]{2,})$/i;
 const passwordRegex =
 	/^(?=.*[0-9])(?=.*[a-zA-Z])(?=.*[!@#$%^&*])[a-zA-Z0-9!@#$%^&*]{6,20}$/;
 
-//свой хук
-const useStore = () => {
-	const [state, setState] = useState(initialState);
-
-	return {
-		//возрващаем начальное состояние
-		getState: () => state,
-		//возвращаем обновленное состояние
-		updateState: (fieldName, newValue) => {
-			//передаем сначало начальное состояние(email, password, confirmPassword), потом новое состояние по имени[fieldName]
-			setState({ ...state, [fieldName]: newValue });
-			console.log('updateState', state);
-		},
-	};
-};
 //передача в консоль
 const sendData = (formData) => {
 	console.log(formData);
 };
 
 export const App = () => {
-	const { getState, updateState } = useStore('');
+	const { getState, updateState, resetState } = useStore('');
 	const [errors, setErrors] = useState({});
 	const [validForm, setValidForm] = useState(false);
 
@@ -42,7 +23,7 @@ export const App = () => {
 	//Валидация формы
 	const validateValues = (inputValues) => {
 		let errors = {};
-		console.log('validateValues', inputValues);
+		// console.log('validateValues', inputValues);
 		if (inputValues.email.length > 0 && !emailRegex.test(inputValues.email)) {
 			errors.email = 'Некоректный Email';
 		}
@@ -54,7 +35,7 @@ export const App = () => {
 				'В пароле должно быть от 6-20 символов и включать в себя хотя бы: 1 букву, 1 специальный символ, одну цифру';
 		}
 		if (
-			inputValues.confirmPassword.length > 0 &&
+			inputValues.confirmPassword.length !== inputValues.password.length &&
 			inputValues.confirmPassword !== inputValues.password
 		) {
 			errors.confirmPassword = 'Пароль должен совпадать';
@@ -68,10 +49,11 @@ export const App = () => {
 			if (form[key] === '') {
 				return false;
 			}
-			if (Object.keys(errors).length !== 0) {
-				return false;
-			}
 		}
+		if (Object.keys(errors).length !== 0) {
+			return false;
+		}
+		// debugger;
 		return true;
 	};
 
@@ -80,6 +62,7 @@ export const App = () => {
 	const onSubmit = (e) => {
 		e.preventDefault();
 		sendData(getState());
+		resetState();
 	};
 	const { email, password, confirmPassword } = getState();
 
@@ -95,7 +78,7 @@ export const App = () => {
 
 	useEffect(() => {
 		setValidForm(checkValidForm());
-	}, [email, password, confirmPassword, errors]);
+	}, [errors]);
 
 	useEffect(() => {
 		if (validForm) {
