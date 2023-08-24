@@ -1,129 +1,91 @@
 /* eslint-disable */
-import { useEffect, useState, useRef } from 'react';
+import { useEffect, useRef } from 'react';
+import * as yup from 'yup';
+import { yupResolver } from '@hookform/resolvers/yup';
 import styles from './App.module.css';
-import { useStore } from './hooks/useStore';
-
-const emailRegex =
-	/^(([^<>()[\]\.,;:\s@\"]+(\.[^<>()[\]\.,;:\s@\"]+)*)|(\".+\"))@(([^<>()[\]\.,;:\s@\"]+\.)+[^<>()[\]\.,;:\s@\"]{2,})$/i;
-const passwordRegex =
-	/^(?=.*[0-9])(?=.*[a-zA-Z])(?=.*[!@#$%^&*])[a-zA-Z0-9!@#$%^&*]{6,20}$/;
+import { useForm } from 'react-hook-form';
+import { passwordRegex } from './utils/regex';
 
 //передача в консоль
 const sendData = (formData) => {
 	console.log(formData);
 };
 
-export const App = () => {
-	const { getState, updateState, resetState } = useStore('');
-	const [errors, setErrors] = useState({});
-	const [validForm, setValidForm] = useState(false);
+const fieldsScheme = yup.object().shape({
+	email: yup.string().email('Некоректный Email').required('Укажите email!'),
+	password: yup
+		.string()
+		.matches(
+			passwordRegex,
+			'В пароле должно быть от 6-20 символов и включать в себя хотя бы: 1 букву, 1 специальный символ, одну цифру',
+		)
+		.required('Укажите пароль!'),
+	confirmPassword: yup
+		.string()
+		.required('Повторите пароль!')
+		.oneOf([yup.ref('password')], 'Пароли должны совпадать!'),
+});
 
+export const App = () => {
 	const submitButtonRef = useRef(null);
 
-	//Валидация формы
-	const validateValues = (inputValues) => {
-		let errors = {};
-		// console.log('validateValues', inputValues);
-		if (inputValues.email.length > 0 && !emailRegex.test(inputValues.email)) {
-			errors.email = 'Некоректный Email';
-		}
-		if (
-			inputValues.password.length > 0 &&
-			!passwordRegex.test(inputValues.password)
-		) {
-			errors.password =
-				'В пароле должно быть от 6-20 символов и включать в себя хотя бы: 1 букву, 1 специальный символ, одну цифру';
-		}
-		if (
-			inputValues.confirmPassword.length !== inputValues.password.length &&
-			inputValues.confirmPassword !== inputValues.password
-		) {
-			errors.confirmPassword = 'Пароль должен совпадать';
-		}
-		return errors;
-	};
-	//Проверка на валидность формы
-	const checkValidForm = () => {
-		const form = getState();
-		for (const key in form) {
-			if (form[key] === '') {
-				return false;
-			}
-		}
-		if (Object.keys(errors).length !== 0) {
-			return false;
-		}
-		// debugger;
-		return true;
-	};
+	const {
+		register,
+		handleSubmit,
+		formState: { errors, isValid },
+	} = useForm({
+		defaultValues: {
+			email: '',
+			password: '',
+			confirmPassword: '',
+		},
+		resolver: yupResolver(fieldsScheme),
+		mode: 'onBlur',
+	});
 
-	const onBlur = (e) => {};
-
-	const onSubmit = (e) => {
-		e.preventDefault();
-		sendData(getState());
-		resetState();
-	};
-	const { email, password, confirmPassword } = getState();
-
-	//передаем имя поля и новое значение
-	const onChange = (event) => {
-		updateState(event.target.name, event.target.value);
+	const onSubmit = (data) => {
+		sendData(data);
 	};
 
 	useEffect(() => {
-		const currentErrors = validateValues(getState());
-		setErrors(currentErrors);
-	}, [email, password, confirmPassword]);
-
-	useEffect(() => {
-		setValidForm(checkValidForm());
-	}, [errors]);
-
-	useEffect(() => {
-		if (validForm) {
+		if (isValid) {
 			submitButtonRef.current.focus();
 		}
-	}, [validForm]);
+	}, [isValid]);
 
 	return (
 		<div className={styles.app}>
-			<form className={styles.formInput} onSubmit={onSubmit}>
+			<form className={styles.formInput} onSubmit={handleSubmit(onSubmit)}>
 				<h1>Регистрация</h1>
-				{errors.email && <div style={{ color: 'red' }}>{errors.email}</div>}
+				{errors.email && (
+					<div style={{ color: 'red' }}>{errors.email.message}</div>
+				)}
 
 				<input
 					className={styles.input}
 					type="email"
-					name="email"
-					value={email}
+					{...register('email')}
 					placeholder="Введите email"
-					onChange={onChange}
-					onBlur={onBlur}
 				/>
-				{errors.password && <div style={{ color: 'red' }}>{errors.password}</div>}
-				<input
-					className={styles.input}
-					type="password"
-					name="password"
-					value={password}
-					placeholder="Введите пароль"
-					onChange={onChange}
-					onBlur={onBlur}
-				/>
-				{errors.confirmPassword && (
-					<div style={{ color: 'red' }}>{errors.confirmPassword}</div>
+				{errors.password && (
+					<div style={{ color: 'red' }}>{errors.password.message}</div>
 				)}
 				<input
 					className={styles.input}
 					type="password"
-					name="confirmPassword"
-					value={confirmPassword}
-					placeholder="Введите повторно пароль"
-					onChange={onChange}
-					onBlur={onBlur}
+					{...register('password')}
+					placeholder="Введите пароль"
 				/>
-				<button ref={submitButtonRef} type="submit" disabled={!validForm}>
+				{errors.confirmPassword && (
+					<div style={{ color: 'red' }}>{errors.confirmPassword.message}</div>
+				)}
+				<input
+					className={styles.input}
+					type="password"
+					{...register('confirmPassword')}
+					placeholder="Введите повторно пароль"
+				/>
+				<button type="submit" ref={submitButtonRef} disabled={!isValid}>
 					Зарегестрироваться
 				</button>
 			</form>
