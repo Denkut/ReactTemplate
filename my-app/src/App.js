@@ -1,43 +1,47 @@
-import logo from './logo.svg';
-import './App.css';
-import React from 'react';
+import { useState } from 'react';
+import {
+	useRequestAddVacuumCleaner,
+	useRequestDeleteHairDryer,
+	useRequestGetProducts,
+	useRequestUpdateSmartphone,
+} from './hooks';
+import styles from './app.module.css';
 
 export const App = () => {
-	const dateNow = new Date();
-	// императивный
-	return React.createElement(
-		'div',
-		{
-			className: 'App',
-		},
-		React.createElement(
-			'header',
-			{
-				className: 'App-header',
-			},
-			React.createElement('img', {
-				src: logo,
-				className: 'App-logo',
-				alt: 'logo',
-			}),
-			React.createElement(
-				'p',
-				null,
-				'Edit ',
-				React.createElement('code', null, 'src/App.js'),
-				' and save to reload.',
-			),
-			React.createElement(
-				'a',
-				{
-					className: 'App-link',
-					href: 'https://reactjs.org',
-					target: '_blank',
-					rel: 'noopener noreferrer',
-				},
-				'Learn React',
-			),
-			/*#__PURE__*/ React.createElement('p', null, dateNow.getFullYear()),
-		),
+	const [refreshProductsFlag, setRefreshProductFlag] = useState(false);
+	const refreshProducts = () => setRefreshProductFlag(!refreshProductsFlag);
+
+	const { isLoading, products } = useRequestGetProducts(refreshProductsFlag);
+
+	const { isCreating, requestAddVacuumCleaner } =
+		useRequestAddVacuumCleaner(refreshProducts);
+
+	const { isDeleting, requestDeleteHairDryer } =
+		useRequestDeleteHairDryer(refreshProducts);
+
+	const { isUpdating, requestUpdateSmartphone } =
+		useRequestUpdateSmartphone(refreshProducts);
+
+	return (
+		<div className={styles.app}>
+			{isLoading ? (
+				<div className={styles.loader}></div>
+			) : (
+				products.map(({ id, name, price }) => (
+					<div key={id}>
+						{name} - {price} руб
+					</div>
+				))
+			)}
+			<button disabled={isCreating} onClick={requestAddVacuumCleaner}>
+				Добавить пылесос
+			</button>
+			<button disabled={isUpdating} onClick={requestUpdateSmartphone}>
+				Обновить смартфон
+			</button>
+			<button disabled={isDeleting} onClick={requestDeleteHairDryer}>
+				Удалить фен
+			</button>
+		</div>
 	);
 };
