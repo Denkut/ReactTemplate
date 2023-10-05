@@ -22,9 +22,9 @@ export const Todo = ({ todos, completeTodo, removeTodo, updateTodo }) => {
 	}
 
 	return todos.map((todo, index) => (
-		<div className={todo.isComplete ? 'todo-row complete' : 'todo-row'} key={index}>
+		<div className={todo.completed ? 'todo-row complete' : 'todo-row'} key={index}>
 			<div key={todo.id} onClick={() => completeTodo(todo.id)}>
-				{todo.text}
+				{todo.title}
 			</div>
 			<div className="icons">
 				<RiCloseCircleLine
@@ -32,7 +32,7 @@ export const Todo = ({ todos, completeTodo, removeTodo, updateTodo }) => {
 					className="delete-icon"
 				/>
 				<TiEdit
-					onClick={() => setEdit({ id: todo.id, value: todo.text })}
+					onClick={() => setEdit({ id: todo.id, value: todo.title })}
 					className="edit-icon"
 				/>
 			</div>

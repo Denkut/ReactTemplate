@@ -1,12 +1,22 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { TodoForm } from './TodoForm';
 import { Todo } from './Todo';
+import { API_TODOS_URL } from '../utils/constants';
 
 export const TodoList = () => {
 	const [todos, setTodos] = useState([]);
 
+	useEffect(() => {
+		fetch(API_TODOS_URL)
+			.then((response) => response.json())
+			.then((data) => {
+				data = data.slice(0, 5); //for test
+				setTodos(data);
+			});
+	}, []);
+
 	const addTodo = (todo) => {
-		if (!todo.text || /^\s*$/.test(todo.text)) {
+		if (!todo.title || /^\s*$/.test(todo.title)) {
 			return;
 		}
 
@@ -16,7 +26,7 @@ export const TodoList = () => {
 	};
 
 	const updateTodo = (todoId, newValue) => {
-		if (!newValue.text || /^\s*$/.test(newValue.text)) {
+		if (!newValue.title || /^\s*$/.test(newValue.title)) {
 			return;
 		}
 
@@ -32,7 +42,7 @@ export const TodoList = () => {
 	const completeTodo = (id) => {
 		let updateTodos = todos.map((todo) => {
 			if (todo.id === id) {
-				todo.isComplete = !todo.isComplete;
+				todo.completed = !todo.completed;
 			}
 			return todo;
 		});

@@ -18,7 +18,7 @@ export const TodoForm = (props) => {
 
 		props.onSubmit({
 			id: new Date(),
-			text: input,
+			title: input,
 		});
 
 		setInput('');
