@@ -1,13 +1,13 @@
 import React, { useState, useEffect, useRef } from 'react';
 
-export const TodoForm = (props) => {
-	const [input, setInput] = useState(props.edit ? props.edit.value : '');
+export const TodoForm = ({ onSubmit, edit }) => {
+	const [input, setInput] = useState(edit ? edit.title : '');
 
 	const inputRef = useRef(null);
 
 	useEffect(() => {
 		inputRef.current.focus();
-	});
+	},[input]);
 
 	const handleChange = (e) => {
 		setInput(e.target.value);
@@ -16,23 +16,29 @@ export const TodoForm = (props) => {
 	const handleSubmit = (e) => {
 		e.preventDefault();
 
-		props.onSubmit({
-			id: new Date(),
-			title: input,
-		});
+		const submitTodo = edit
+			? {
+					...edit,
+					title: input,
+			  }
+			: {
+					id: new Date(),
+					title: input,
+			  };
+		onSubmit(submitTodo);
 
 		setInput('');
 	};
 	return (
 		<form className="todo-form" onSubmit={handleSubmit}>
-			{props.edit ? (
+			{edit ? (
 				<>
 					<input
 						type="text"
 						placeholder="Обнови задачу..."
 						value={input}
 						name="text"
-						className="todo-input edit"
+						className="todo-input edit-search"
 						onChange={handleChange}
 						ref={inputRef}
 					/>

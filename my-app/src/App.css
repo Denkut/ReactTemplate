@@ -146,3 +146,25 @@
   .edit-icon {
     color: #fff;
   }
+
+  .todo-input.search {
+    margin-bottom: 20px;
+    margin-right: 135px; ;
+  }
+
+  .sort-check {
+    text-align: left;
+    color: #fff;
+    display: inline-block;
+    width: 90%;
+    padding: 20px;
+  }
+
+  .sort-check label {
+    display: flex;
+    align-items: center;
+  }
+
+  .sort-check input {
+    margin-left: 20px;
+  }

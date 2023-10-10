@@ -1,59 +1,82 @@
 import React, { useEffect, useState } from 'react';
 import { TodoForm } from './TodoForm';
 import { Todo } from './Todo';
-import { API_TODOS_URL } from '../utils/constants';
+import { useRequestGetTodos } from '../hooks/use-request-get-todos';
+import { useRequestAddTodo } from '../hooks/use-add-todo';
+import { useRemoveTodo } from '../hooks/use-remove-todo';
+import { useRequestUpdateTodo } from '../hooks/use-update-todo';
+import { SearchTodo } from './SearchTodo';
+import { SortTodo } from './SortTodo';
 
 export const TodoList = () => {
-	const [todos, setTodos] = useState([]);
+	const [refreshTodosFlag, setRefreshTodosFlag] = useState(false);
 
-	useEffect(() => {
-		fetch(API_TODOS_URL)
-			.then((response) => response.json())
-			.then((data) => {
-				data = data.slice(0, 5); //for test
-				setTodos(data);
-			});
-	}, []);
+	const refreshTodos = () => setRefreshTodosFlag(!refreshTodosFlag);
+
+	const { isLoading, todos } = useRequestGetTodos(refreshTodosFlag);
+
+	const { isCreating, requestAddTodo } = useRequestAddTodo(refreshTodos);
+
+	const { isDeleting, requestRemoveTodo } = useRemoveTodo(refreshTodos);
+
+	const { isUpdating, requestUpdateTodo } = useRequestUpdateTodo(refreshTodos);
+
+	const [searchText, setSearchText] = useState('');
+
+	const [sortAlphabet, setSortAlphabet] = useState(false);
 
 	const addTodo = (todo) => {
 		if (!todo.title || /^\s*$/.test(todo.title)) {
 			return;
 		}
-
-		const newTodos = [todo, ...todos];
-
-		setTodos(newTodos);
+		requestAddTodo(todo);
 	};
 
-	const updateTodo = (todoId, newValue) => {
-		if (!newValue.title || /^\s*$/.test(newValue.title)) {
+	const updateTodo = (todo) => {
+		if (!todo.title || /^\s*$/.test(todo.title)) {
 			return;
 		}
-
-		setTodos((prev) => prev.map((item) => (item.id === todoId ? newValue : item)));
+		requestUpdateTodo(todo);
 	};
 
 	const removeTodo = (id) => {
-		const removeArr = [...todos].filter((todo) => todo.id !== id);
-
-		setTodos(removeArr);
+		requestRemoveTodo(id);
 	};
 
-	const completeTodo = (id) => {
-		let updateTodos = todos.map((todo) => {
-			if (todo.id === id) {
-				todo.completed = !todo.completed;
-			}
-			return todo;
+	const completeTodo = (todo) => {
+		requestUpdateTodo({
+			...todo,
+			completed: !todo.completed,
 		});
-		setTodos(updateTodos);
 	};
+
+	const handleSearch = (e) => {
+		setSearchText(e.target.value);
+	};
+
+	const handleSort = () => {
+		setSortAlphabet(!sortAlphabet);
+	};
+
+	const filtteredTodos = todos.filter((todo) => {
+		return todo.title.toLowerCase().includes(searchText.toLowerCase());
+	});
+
+	const sortedTodos = [...filtteredTodos];
+	if (sortAlphabet) {
+		sortedTodos.sort((a, b) => a.title.localeCompare(b.title));
+	}
+
 	return (
 		<div>
 			<h1>Какие планы на сегодня?</h1>
+			<SortTodo handleSort={handleSort} />
+			<SearchTodo searchTodo={searchText} handleSearch={handleSearch} />
+
 			<TodoForm onSubmit={addTodo} />
+
 			<Todo
-				todos={todos}
+				todos={sortedTodos}
 				completeTodo={completeTodo}
 				removeTodo={removeTodo}
 				updateTodo={updateTodo}

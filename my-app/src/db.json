@@ -1,19 +1,24 @@
 {
-  "products": [
+  "todos": [
     {
-      "id": "001",
-      "name": "Телевизор",
-      "price": 39800
+      "id": "0",
+      "title": "Телевизор2222",
+      "completed": false
     },
     {
-      "name": "Смартфон",
-      "price": 17900,
-      "id": "002"
+      "id": "1",
+      "title": "Смартфон",
+      "completed": false
     },
     {
-      "name": "Новый пылесос",
-      "price": 4990,
-      "id": "7nDSfZ5"
+      "id": "2023-10-10T18:13:14.716Z",
+      "title": "Ад",
+      "completed": false
+    },
+    {
+      "id": "2023-10-10T18:13:19.116Z",
+      "title": "язва",
+      "completed": false
     }
   ]
 }
