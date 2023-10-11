@@ -57,16 +57,20 @@ export const TodoList = () => {
 	const handleSort = () => {
 		setSortAlphabet(!sortAlphabet);
 	};
-	const filtteredTodos = Object.entries(todos).filter(([id, todo]) => {
+	const preparedTodos = Object.entries(todos).map(([id, todo]) => {
+		return {
+			...todo,
+			id: id
+		}
+	})
+	const filtteredTodos = preparedTodos.filter((todo) => {
 		return todo.title.toLowerCase().includes(searchText.toLowerCase());
 	});
-	console.log('todos', todos);
 
 	const sortedTodos = [...filtteredTodos];
 	if (sortAlphabet) {
 		sortedTodos.sort((a, b) => a.title.localeCompare(b.title));
 	}
-
 	return (
 		<div>
 			<h1>Какие планы на сегодня?</h1>
