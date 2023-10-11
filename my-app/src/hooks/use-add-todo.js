@@ -1,15 +1,21 @@
 import { useState } from 'react';
-import { fetchAddTodo } from '../utils/todos-api';
+import { ref, push } from 'firebase/database';
+import { db } from '../firebase';
 
-export const useRequestAddTodo = (refreshTodos) => {
+export const useRequestAddTodo = () => {
 	const [isCreating, setIsCreating] = useState(false);
 
 	const requestAddTodo = (todo) => {
 		setIsCreating(true);
-		fetchAddTodo(todo)
+
+		const addTodosDbRef = ref(db, 'todos');
+
+		push(addTodosDbRef, {
+			...todo,
+			completed: false,
+		})
 			.then((response) => {
 				console.log('Задача добавлена, ответ от сервера:', response);
-				refreshTodos();
 			})
 			.finally(() => setIsCreating(false));
 	};

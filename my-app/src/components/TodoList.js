@@ -13,7 +13,7 @@ export const TodoList = () => {
 
 	const refreshTodos = () => setRefreshTodosFlag(!refreshTodosFlag);
 
-	const { isLoading, todos } = useRequestGetTodos(refreshTodosFlag);
+	const { isLoading, todos } = useRequestGetTodos();
 
 	const { isCreating, requestAddTodo } = useRequestAddTodo(refreshTodos);
 
@@ -57,10 +57,10 @@ export const TodoList = () => {
 	const handleSort = () => {
 		setSortAlphabet(!sortAlphabet);
 	};
-
-	const filtteredTodos = todos.filter((todo) => {
+	const filtteredTodos = Object.entries(todos).filter(([id, todo]) => {
 		return todo.title.toLowerCase().includes(searchText.toLowerCase());
 	});
+	console.log('todos', todos);
 
 	const sortedTodos = [...filtteredTodos];
 	if (sortAlphabet) {

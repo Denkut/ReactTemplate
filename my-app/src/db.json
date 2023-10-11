@@ -1,24 +1,16 @@
 {
-  "todos": [
-    {
-      "id": "0",
-      "title": "Телевизор2222",
+  "todos": {
+   "0": {
+      "title": "Телевизор",
       "completed": false
     },
-    {
-      "id": "1",
+   "1": {
       "title": "Смартфон",
       "completed": false
     },
-    {
-      "id": "2023-10-10T18:13:14.716Z",
-      "title": "Ад",
-      "completed": false
-    },
-    {
-      "id": "2023-10-10T18:13:19.116Z",
-      "title": "язва",
+    "3": {
+      "title": "Чайник",
       "completed": false
     }
-  ]
-}
+    }
+  }
