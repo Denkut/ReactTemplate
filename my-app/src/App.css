@@ -31,6 +31,31 @@
     color: #fff;
     font-size: 24px;
   }
+  h2 {
+    margin: 32px 0;
+    color: #04ce04;
+    font-size: 30px;
+    text-align: center;
+    margin: 0;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    margin-right: -50%;
+    transform: translate(-50%, -50%)
+  }
+
+  h3 {
+    margin: 32px 0;
+    color: #ce0404;
+    font-size: 30px;
+    text-align: center;
+    margin: 0;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    margin-right: -50%;
+    transform: translate(-50%, -50%)
+  }
   
   .complete {
     text-decoration: line-through;
@@ -103,8 +128,55 @@
   
     padding: 16px;
     border-radius: 5px;
-    width: 90%;
+    max-width: 90%;
     cursor: pointer;
+  }
+  .todo-row{
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin: 4px auto;
+    color: #fff;
+    background: linear-gradient(
+      90deg,
+      rgba(255, 118, 20, 1) 0%,
+      rgba(255, 84, 17, 1) 100%
+    );
+  
+    padding: 16px;
+    border-radius: 5px;
+    max-width: 90%;
+    cursor: pointer;
+  }
+  .todo-row add{
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin: 4px auto;
+    color: #fff;
+    background: linear-gradient(
+      90deg,
+      rgba(255, 118, 20, 1) 0%,
+      rgba(255, 84, 17, 1) 100%
+    );
+  
+    padding: 16px;
+    border-radius: 5px;
+    max-width: 100%;
+    cursor: pointer;
+  }
+
+  .todo-text {
+    white-space: nowrap; /* Текст не переносится */
+    overflow: hidden; /* Обрезаем всё за пределами блока */
+    text-overflow: ellipsis; /* Добавляем многоточие */
+    max-width: 400px;
+  }
+  .todo-text-add{
+    word-wrap: break-word;
+    white-space: normal; 
+    max-width: 85%;
+    text-align:left;
   }
   
   .todo-row:nth-child(4n + 1) {
@@ -141,10 +213,34 @@
   .delete-icon {
     margin-right: 5px;
     color: #fff;
+    margin-left: 5px;
   }
   
   .edit-icon {
     color: #fff;
+  }
+
+  .done-icon {
+    margin-right: 5px;
+    color: #fff;
+  }
+
+  .back-icon {
+    color: #fefefe;
+    font-size: 30px;
+    cursor: pointer;
+  }
+
+  .back-icon :hover {
+    color: #31d400;
+    transition: .2s;
+    text-align: center;
+    margin-right: 5px;
+  }
+
+  .icons :hover {
+    color:#161a2b;
+    transition: .2s;
   }
 
   .todo-input.search {
@@ -167,4 +263,17 @@
 
   .sort-check input {
     margin-left: 20px;
+  }
+
+  a {
+    margin: 5px 0;
+    color: #fff;
+    font-size: 18px;
+    text-decoration: none;
+  }
+
+  .active {
+    font-weight: bold;
+    color:#ece6e6;
+    text-decoration: underline;
   }

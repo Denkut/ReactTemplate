@@ -1,7 +1,8 @@
 import React, { useState } from 'react';
 import { TodoForm } from './TodoForm';
-import { RiCloseCircleLine } from 'react-icons/ri';
-import { TiEdit } from 'react-icons/ti';
+
+import { AiOutlineFileDone } from 'react-icons/ai';
+import { NavLink } from 'react-router-dom';
 
 export const Todo = ({ todos, completeTodo, removeTodo, updateTodo }) => {
 	const [edit, setEdit] = useState({
@@ -22,15 +23,17 @@ export const Todo = ({ todos, completeTodo, removeTodo, updateTodo }) => {
 	}
 	return todos.map((todo, index) => (
 		<div className={todo.completed ? 'todo-row complete' : 'todo-row'} key={index}>
-			<div key={todo.id} onClick={() => completeTodo(todo)}>
-				{todo.title}
-			</div>
+			<NavLink to={`/task/${todo.id}`}>
+				<div className="todo-text" key={todo.id}>
+					{todo.title}
+				</div>
+			</NavLink>
+
 			<div className="icons">
-				<RiCloseCircleLine
-					onClick={() => removeTodo(todo.id)}
-					className="delete-icon"
+				<AiOutlineFileDone
+					onClick={() => completeTodo(todo)}
+					className="done-icon"
 				/>
-				<TiEdit onClick={() => setEdit(todo)} className="edit-icon" />
 			</div>
 		</div>
 	));
