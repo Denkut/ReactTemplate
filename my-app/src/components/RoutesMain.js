@@ -1,4 +1,4 @@
-import { Routes, Route, NavLink, Outlet, useParams } from 'react-router-dom';
+import { Routes, Route, Navigate } from 'react-router-dom';
 import { TaskPage } from '../pages/TaskPage';
 import { NotFound } from '../pages/NotFound';
 import { TodoList } from '../pages/TodoList';
@@ -29,7 +29,8 @@ export const RoutesMain = ({ todos, addTodo, updateTodo, removeTodo, completeTod
 						/>
 					}
 				/>
-				<Route path="*" element={<NotFound />} />
+				<Route path="/404" element={<NotFound />} />
+				<Route path="*" element={<Navigate to="/404" />} />
 			</Routes>
 		</div>
 	);
