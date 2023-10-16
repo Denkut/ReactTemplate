@@ -1,12 +1,15 @@
-import React, { useState } from 'react';
+import React, { useContext, useState } from 'react';
 import { RiCloseCircleLine } from 'react-icons/ri';
 import { TiEdit } from 'react-icons/ti';
 import { BiArrowBack } from 'react-icons/bi';
 import { TodoForm } from '../components/TodoForm';
-import { useParams, Navigate, useNavigate } from 'react-router-dom';
+import { useParams, useNavigate } from 'react-router-dom';
+import { AppContext } from '../context';
 
-export const TaskPage = ({ todos, addTodo, updateTodo, removeTodo, completeTodo }) => {
+export const TaskPage = () => {
 	const [isRemoved, setIsRemoved] = useState(false);
+	
+	const { todos, updateTodo, removeTodo } = useContext(AppContext);
 
 	const [edit, setEdit] = useState({
 		id: null,

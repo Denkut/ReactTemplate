@@ -5,6 +5,7 @@ import { useRequestGetTodos } from './hooks/use-request-get-todos';
 import { useRequestAddTodo } from './hooks/use-add-todo';
 import { useRemoveTodo } from './hooks/use-remove-todo';
 import { useRequestUpdateTodo } from './hooks/use-update-todo';
+import { AppContext } from './context';
 
 export const App = () => {
 	const [refreshTodosFlag, setRefreshTodosFlag] = useState(false);
@@ -44,14 +45,12 @@ export const App = () => {
 		});
 	};
 	return (
-		<div className="todo-app ">
-			<RoutesMain
-				todos={todos}
-				addTodo={addTodo}
-				updateTodo={updateTodo}
-				removeTodo={removeTodo}
-				completeTodo={completeTodo}
-			/>
-		</div>
+		<AppContext.Provider value={{todos, addTodo, updateTodo, removeTodo, completeTodo }}>
+			<div className="todo-app ">
+				<RoutesMain
+					
+				/>
+			</div>
+		</AppContext.Provider>
 	);
 };

@@ -1,10 +1,13 @@
-import React, { useState } from 'react';
+import React, { useContext, useState } from 'react';
 import { TodoForm } from '../components/TodoForm';
 import { Todo } from '../components/Todo';
 import { SearchTodo } from '../components/SearchTodo';
 import { SortTodo } from '../components/SortTodo';
+import { AppContext } from '../context';
 
-export const TodoList = ({ todos, addTodo, updateTodo, removeTodo, completeTodo }) => {
+export const TodoList = () => {
+	const { todos, addTodo, updateTodo, removeTodo, completeTodo } =
+		useContext(AppContext);
 	const [searchText, setSearchText] = useState('');
 
 	const [sortAlphabet, setSortAlphabet] = useState(false);
