@@ -6,7 +6,7 @@ import { SortTodo } from '../components/SortTodo';
 import { AppContext } from '../context';
 
 export const TodoList = () => {
-	const { todos, addTodo, updateTodo, removeTodo, completeTodo } =
+	const { todos, addTodo} =
 		useContext(AppContext);
 	const [searchText, setSearchText] = useState('');
 
@@ -39,9 +39,6 @@ export const TodoList = () => {
 
 			<Todo
 				todos={sortedTodos}
-				completeTodo={completeTodo}
-				removeTodo={removeTodo}
-				updateTodo={updateTodo}
 			/>
 		</div>
 	);

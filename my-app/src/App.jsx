@@ -1,11 +1,14 @@
 import React, { useState } from 'react';
+import { Routes, Route, Navigate } from 'react-router-dom';
 import './App.css';
-import { RoutesMain } from './components/RoutesMain';
 import { useRequestGetTodos } from './hooks/use-request-get-todos';
 import { useRequestAddTodo } from './hooks/use-add-todo';
 import { useRemoveTodo } from './hooks/use-remove-todo';
 import { useRequestUpdateTodo } from './hooks/use-update-todo';
 import { AppContext } from './context';
+import { TodoList } from './pages/TodoList';
+import { TaskPage } from './pages/TaskPage';
+import { NotFound } from './pages/NotFound';
 
 export const App = () => {
 	const [refreshTodosFlag, setRefreshTodosFlag] = useState(false);
@@ -14,11 +17,12 @@ export const App = () => {
 
 	const { isLoading, todos } = useRequestGetTodos(refreshTodosFlag);
 
-	const { isCreating, requestAddTodo } = useRequestAddTodo(refreshTodos);
+	const { requestAddTodo } = useRequestAddTodo(refreshTodos);
 
 	const { isDeleting, requestRemoveTodo } = useRemoveTodo(refreshTodos);
 
-	const { isUpdating, requestUpdateTodo } = useRequestUpdateTodo(refreshTodos);
+	const { requestUpdateTodo } = useRequestUpdateTodo(refreshTodos);
+
 
 	const addTodo = (todo) => {
 		if (!todo.title || /^\s*$/.test(todo.title)) {
@@ -44,12 +48,33 @@ export const App = () => {
 			completed: !todo.completed,
 		});
 	};
+	
 	return (
-		<AppContext.Provider value={{todos, addTodo, updateTodo, removeTodo, completeTodo }}>
+		<AppContext.Provider
+			value={{
+				todos,
+				isLoading,
+				isDeleting,
+				addTodo,
+				updateTodo,
+				removeTodo,
+				completeTodo,
+			}}
+		>
 			<div className="todo-app ">
-				<RoutesMain
-					
-				/>
+				
+				{isLoading || isDeleting ? (
+					<div className="loading">Loading..</div> 
+				) : (
+					<div>
+					<Routes>
+						<Route path="/" element={<TodoList />} />
+						<Route path="task/:id" element={<TaskPage />} />
+						<Route path="/404" element={<NotFound />} />
+						<Route path="*" element={<Navigate to="/404" />} />
+					</Routes>
+					</div>
+				)}
 			</div>
 		</AppContext.Provider>
 	);

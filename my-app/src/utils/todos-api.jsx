@@ -30,3 +30,7 @@ export const fetchUpdateTodo = (todo) => {
 		}),
 	}).then((rawRespone) => rawRespone.json());
 };
+
+export const getTodoById = (id) => {
+	return fetch(`${API_TODOS_URL}/${id}`).then((response) => response.json());
+}

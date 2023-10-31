@@ -5,11 +5,12 @@ import { BiArrowBack } from 'react-icons/bi';
 import { TodoForm } from '../components/TodoForm';
 import { useParams, useNavigate } from 'react-router-dom';
 import { AppContext } from '../context';
+import { useRequestGetTodoById } from '../hooks/use-request-get-todo-by-id';
 
 export const TaskPage = () => {
 	const [isRemoved, setIsRemoved] = useState(false);
 	
-	const { todos, updateTodo, removeTodo } = useContext(AppContext);
+	const { updateTodo, removeTodo } = useContext(AppContext);
 
 	const [edit, setEdit] = useState({
 		id: null,
@@ -19,9 +20,16 @@ export const TaskPage = () => {
 	const params = useParams();
 	const navigate = useNavigate();
 
+	const { isLoading, todo } = useRequestGetTodoById(params.id);
+	
+
 	const handleRemove = (id) => {
 		removeTodo(id);
 		setIsRemoved(true);
+		setTimeout(() => {
+			navigate(-1);
+			console.log("Задача выполнена");
+		}, 1500);
 	};
 
 	const submitUpdate = (todo) => {
@@ -32,18 +40,24 @@ export const TaskPage = () => {
 		});
 	};
 
-	const currentTodo = todos.find((todo) => {
-		return todo.id === params.id;
-	});
+	const currentTodo = todo;
+
+	if(isLoading) {
+		return <div className="loading">Loading..</div> 
+	}
+	
 	if (edit.id) {
 		return <TodoForm edit={edit} onSubmit={submitUpdate} />;
 	}
+	
 	if (isRemoved) {
 		return <h2>Задача успешно удалена</h2>;
 	}
 
-	if (typeof currentTodo === 'undefined') {
-		return <h3>Задача не найдена</h3>;
+	if (currentTodo == null || Object.keys(currentTodo).length === 0) {
+		return (
+		<h3>Задача не найдена</h3>
+		);
 	}
 	return (
 		<>

@@ -1,16 +1,15 @@
 import React, { useContext, useState } from 'react';
 import { TodoForm } from './TodoForm';
-
 import { AiOutlineFileDone } from 'react-icons/ai';
 import { NavLink } from 'react-router-dom';
 import { AppContext } from '../context';
 
-export const Todo = () => {
+export const Todo = ({todos}) => {
 	const [edit, setEdit] = useState({
 		id: null,
 		title: '',
 	});
-	const { todos, completeTodo, updateTodo } = useContext(AppContext);
+	const { completeTodo, updateTodo } = useContext(AppContext);
 
 	const submitUpdate = (todo) => {
 		updateTodo(todo);
